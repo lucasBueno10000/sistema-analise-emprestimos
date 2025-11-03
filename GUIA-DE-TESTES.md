@@ -324,18 +324,3 @@ taskkill /PID <PID> /F
 - Se testar de um frontend, está liberado
 
 ---
-
-## 📸 Próximos Passos
-
-1. ✅ Teste todos os cenários
-2. ✅ Capture screenshots dos resultados
-3. ✅ Grave vídeo mostrando:
-   - Swagger UI funcionando
-   - Teste de análise de crédito
-   - Upload de XML
-   - Upload de CNAB
-   - Explicação da arquitetura
-4. ✅ Faça commit no GitHub
-5. ✅ Envie link do repositório + vídeo para o recrutador
-
----
