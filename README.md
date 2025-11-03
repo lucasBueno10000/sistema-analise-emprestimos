@@ -111,12 +111,6 @@ Processamento de notas fiscais em dois formatos:
 
 ### Abordagem de Desenvolvimento: Ágil (Scrum Adaptado)
 
-#### Sprint Planning
-1. **Sprint 1**: Levantamento de requisitos e arquitetura
-2. **Sprint 2**: Implementação da Etapa 1 (Pré-análise)
-3. **Sprint 3**: Implementação da Etapa 2 (Validação de arquivos)
-4. **Sprint 4**: Testes, documentação e deploy
-
 #### Práticas Adotadas
 - **TDD (Test-Driven Development)**: Testes unitários para lógica crítica
 - **Clean Code**: Código autodocumentado com TypeScript
