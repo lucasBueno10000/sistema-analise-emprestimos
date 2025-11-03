@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notasFiscais>
+  <nota>
+    <chave>35210812345678000190550010000123451234567892</chave>
+    <valor>50000.00</valor>
+    <emitente>Empresa ABC Ltda</emitente>
+  </nota>
+  <nota>
+    <chave>35210812345678000190550010000123461234567893</chave>
+    <valor>75000.00</valor>
+    <emitente>Empresa DEF Ltda</emitente>
+  </nota>
+  <nota>
+    <chave>35210812345678000190550010000123471234567894</chave>
+    <valor>120000.00</valor>
+    <emitente>Empresa GHI Ltda</emitente>
+  </nota>
+  <nota>
+    <chave>35210812345678000190550010000123481234567895</chave>
+    <valor>80000.00</valor>
+    <emitente>Empresa JKL Ltda</emitente>
+  </nota>
+  <nota>
+    <chave>35210812345678000190550010000123491234567896</chave>
+    <valor>95000.00</valor>
+    <emitente>Empresa MNO Ltda</emitente>
+  </nota>
+  <nota>
+    <chave>35210812345678000190550010000123501234567897</chave>
+    <valor>60000.00</valor>
+    <emitente>Empresa PQR Ltda</emitente>
+  </nota>
+</notasFiscais>

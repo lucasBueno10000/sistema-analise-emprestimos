@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notasFiscais>
+  <nota>
+    <chave>12345678901234567890123456789012345672</chave>
+    <valor>25000</valor>
+  </nota>
+  <nota>
+    <chave>98765432109876543210987654321098765433</chave>
+    <valor>25000</valor>
+  </nota>
+  <nota>
+    <chave>11111111111111111111111111111111111114</chave>
+    <valor>25000</valor>
+  </nota>
+  <nota>
+    <chave>22222222222222222222222222222222222225</chave>
+    <valor>25000</valor>
+  </nota>
+</notasFiscais>
