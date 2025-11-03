@@ -328,46 +328,6 @@ curl -X POST http://localhost:3000/emprestimos/validar-notas/xml \
   -F "valorEmprestimo=500000"
 ```
 
-## ☁️ Deploy em Cloud (AWS)
-
-### Opção 1: AWS Elastic Beanstalk
-
-```bash
-# Instalar EB CLI
-pip install awsebcli
-
-# Inicializar
-eb init -p node.js-18 analise-emprestimo --region us-east-1
-
-# Criar ambiente
-eb create analise-emprestimo-prod
-
-# Deploy
-eb deploy
-```
-
-### Opção 2: Docker + AWS ECS
-
-```dockerfile
-# Dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["node", "dist/main"]
-```
-
-### Opção 3: Serverless (AWS Lambda)
-
-```bash
-npm install -g serverless
-serverless create --template aws-nodejs-typescript
-serverless deploy
-```
-
 ## 🔒 Segurança
 
 ### Implementado
@@ -461,25 +421,4 @@ async processarArquivoFaturamento(path: string): Promise<FaturamentoDto[]> {
   }));
 }
 ```
-
-## 🎥 Vídeo de Demonstração
-
-[Link para o vídeo será adicionado aqui]
-
-No vídeo, demonstro:
-1. ✅ Instalação e execução local
-2. ✅ Teste de análise de crédito via Swagger
-3. ✅ Upload e validação de XML
-4. ✅ Upload e validação de CNAB
-5. ✅ Explicação da arquitetura
-6. ✅ Demonstração de como seria a integração real
-
-## 📞 Contato
-
-**Desenvolvido como projeto técnico**
-
-Para dúvidas sobre a implementação, entre em contato através do recrutador.
-
----
-
 **🚀 Sistema desenvolvido com NestJS, TypeScript e boas práticas de engenharia de software**
