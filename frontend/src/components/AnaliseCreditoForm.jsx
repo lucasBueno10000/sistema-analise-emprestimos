@@ -10,22 +10,104 @@ function AnaliseCreditoForm() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
+  const [cnpjError, setCnpjError] = useState('')
+
+  // Função para validar CNPJ
+  const validarCNPJ = (cnpj) => {
+    // Remove caracteres não numéricos
+    cnpj = cnpj.replace(/[^\d]/g, '')
+    
+    // Verifica se tem 14 dígitos
+    if (cnpj.length !== 14) return false
+    
+    // Verifica se todos os dígitos são iguais
+    if (/^(\d)\1+$/.test(cnpj)) return false
+    
+    // Valida DVs (dígitos verificadores)
+    let tamanho = cnpj.length - 2
+    let numeros = cnpj.substring(0, tamanho)
+    const digitos = cnpj.substring(tamanho)
+    let soma = 0
+    let pos = tamanho - 7
+    
+    for (let i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--
+      if (pos < 2) pos = 9
+    }
+    
+    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
+    if (resultado != digitos.charAt(0)) return false
+    
+    tamanho = tamanho + 1
+    numeros = cnpj.substring(0, tamanho)
+    soma = 0
+    pos = tamanho - 7
+    
+    for (let i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--
+      if (pos < 2) pos = 9
+    }
+    
+    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
+    if (resultado != digitos.charAt(1)) return false
+    
+    return true
+  }
+
+  // Função para formatar CNPJ
+  const formatarCNPJ = (valor) => {
+    valor = valor.replace(/\D/g, '') // Remove tudo que não é dígito
+    valor = valor.replace(/^(\d{2})(\d)/, '$1.$2') // Coloca ponto entre o segundo e o terceiro dígitos
+    valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3') // Coloca ponto entre o quinto e o sexto dígitos
+    valor = valor.replace(/\.(\d{3})(\d)/, '.$1/$2') // Coloca barra entre o oitavo e o nono dígitos
+    valor = valor.replace(/(\d{4})(\d)/, '$1-$2') // Coloca hífen depois do bloco de quatro dígitos
+    return valor
+  }
+
+  // Função para formatar valor em moeda (Real)
+  const formatarMoeda = (valor) => {
+    // Remove tudo que não é dígito
+    valor = valor.replace(/\D/g, '')
+    
+    // Converte para número e depois para formato de moeda
+    valor = (Number(valor) / 100).toFixed(2)
+    
+    // Formata com separadores
+    valor = valor.replace('.', ',')
+    valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    
+    return valor
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     
+    // Valida CNPJ antes de enviar
+    const cnpjLimpo = formData.cnpj.replace(/\D/g, '')
+    if (!validarCNPJ(cnpjLimpo)) {
+      setCnpjError('CNPJ inválido. Por favor, verifique o número digitado.')
+      return
+    }
+    
     // Limpa resultados anteriores
     setResult(null)
     setError(null)
+    setCnpjError('')
     setLoading(true)
 
     try {
+      // Converte o valor formatado de volta para número
+      const valorNumerico = Number(formData.valorSolicitado.replace(/\./g, '').replace(',', '.'))
+      
+      // URL da API - usa variável de ambiente ou localhost para desenvolvimento
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+      
       const payload = {
-        cnpj: formData.cnpj,
+        cnpj: cnpjLimpo, // Envia apenas os números
         nomeEmpresa: formData.nomeEmpresa,
-        valorSolicitado: Number(formData.valorSolicitado)
+        valorSolicitado: valorNumerico
       }
-      const response = await axios.post('http://localhost:3000/emprestimos/analise-credito', payload)
+      const response = await axios.post(`${API_URL}/emprestimos/analise-credito`, payload)
       
       // Força atualização do estado
       setTimeout(() => {
@@ -39,10 +121,42 @@ function AnaliseCreditoForm() {
   }
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    const { name, value } = e.target
+    
+    if (name === 'cnpj') {
+      // Formata o CNPJ enquanto digita
+      const cnpjFormatado = formatarCNPJ(value)
+      
+      setFormData({
+        ...formData,
+        [name]: cnpjFormatado
+      })
+      
+      // Valida o CNPJ apenas quando tiver 14 dígitos
+      const cnpjLimpo = value.replace(/\D/g, '')
+      if (cnpjLimpo.length === 14) {
+        if (validarCNPJ(cnpjLimpo)) {
+          setCnpjError('')
+        } else {
+          setCnpjError('CNPJ inválido')
+        }
+      } else if (cnpjLimpo.length > 0) {
+        setCnpjError('')
+      }
+    } else if (name === 'valorSolicitado') {
+      // Formata o valor em moeda enquanto digita
+      const valorFormatado = formatarMoeda(value)
+      
+      setFormData({
+        ...formData,
+        [name]: valorFormatado
+      })
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      })
+    }
   }
 
   return (
@@ -56,12 +170,23 @@ function AnaliseCreditoForm() {
             name="cnpj"
             value={formData.cnpj}
             onChange={handleChange}
-            placeholder="12345678000190"
+            placeholder="34.028.316/0001-96"
+            maxLength="18"
             required
+            style={{ 
+              borderColor: cnpjError ? '#ef4444' : undefined,
+              borderWidth: cnpjError ? '2px' : undefined
+            }}
           />
-          <small style={{ color: '#666', fontSize: '0.85rem' }}>
-            Sem pontuação (apenas números)
-          </small>
+          {cnpjError ? (
+            <small style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: '500' }}>
+              ❌ {cnpjError}
+            </small>
+          ) : (
+            <small style={{ color: '#666', fontSize: '0.85rem' }}>
+              Digite o CNPJ com ou sem pontuação | Exemplo: 34.028.316/0001-96
+            </small>
+          )}
         </div>
 
         <div className="form-group">
@@ -80,18 +205,16 @@ function AnaliseCreditoForm() {
         <div className="form-group">
           <label htmlFor="valorSolicitado">Valor Solicitado (R$)</label>
           <input
-            type="number"
+            type="text"
             id="valorSolicitado"
             name="valorSolicitado"
             value={formData.valorSolicitado}
             onChange={handleChange}
-            placeholder="50000"
-            min="1000"
-            step="0.01"
+            placeholder="0,00"
             required
           />
           <small style={{ color: '#666', fontSize: '0.85rem' }}>
-            Valor mínimo: R$ 1.000,00
+            Valor mínimo: R$ 1.000,00 | Exemplo: 50.000,00
           </small>
         </div>
 
@@ -124,7 +247,7 @@ function AnaliseCreditoForm() {
             <p><strong>Valor Solicitado:</strong> {new Intl.NumberFormat('pt-BR', {
               style: 'currency',
               currency: 'BRL'
-            }).format(formData.valorSolicitado)}</p>
+            }).format(Number(formData.valorSolicitado.replace(/\./g, '').replace(',', '.')))}</p>
           </div>
 
           <div className="scores-section">

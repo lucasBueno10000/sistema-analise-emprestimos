@@ -24,11 +24,14 @@ function ValidacaoNotasForm() {
     data.append('arquivo', formData.arquivo)
 
     try {
+      // URL da API - usa variável de ambiente ou localhost para desenvolvimento
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+      
       // Detectar tipo de arquivo pela extensão
       const fileExtension = formData.arquivo.name.split('.').pop().toUpperCase()
       const endpoint = fileExtension === 'REM' 
-        ? 'http://localhost:3000/emprestimos/validar-notas/cnab'
-        : 'http://localhost:3000/emprestimos/validar-notas/xml'
+        ? `${API_URL}/emprestimos/validar-notas/cnab`
+        : `${API_URL}/emprestimos/validar-notas/xml`
 
       const response = await axios.post(endpoint, data, {
         headers: {

@@ -6,16 +6,17 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilitar CORS para Vercel
+  // Habilitar CORS para desenvolvimento e produção no Azure
   app.enableCors({
     origin: [
-      'http://localhost:5173',
-      'https://*.vercel.app',
-      /\.vercel\.app$/,
+      'http://localhost:5173', // Desenvolvimento local
+      'http://localhost:3000',
+      'https://analise-emprestimo-frontend.azurestaticapps.net', // Azure Static Web App
+      'https://analise-emprestimo-frontend.azurewebsites.net', // Azure App Service (caso use)
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // Validação global
@@ -55,8 +56,8 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
-
+  
   console.log(`🚀 Aplicação rodando em: http://localhost:${port}`);
   console.log(`📚 Documentação Swagger: http://localhost:${port}/api`);
 }
-bootstrap();
+void bootstrap();
