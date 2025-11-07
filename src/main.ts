@@ -6,16 +6,48 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilitar CORS para desenvolvimento e produção no Azure
+  // Habilitar CORS para desenvolvimento e produção no Azure.
+  // Usa função dinâmica para aceitar apenas origens conhecidas e tratar preflight corretamente.
+  // Origem padrão se variável de ambiente não estiver definida.
+  const defaultOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://happy-island-0e44dd50f.3.azurestaticapps.net',
+  ];
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+        .map((o) => o.trim())
+        .filter(Boolean)
+    : defaultOrigins;
+
   app.enableCors({
-    origin: [
-      'http://localhost:5173', // Desenvolvimento local
-      'http://localhost:3000',
-      'https://happy-island-0e44dd50f.3.azurestaticapps.net', // Frontend Azure Static Web App
-    ],
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Permitir requisições sem origin (como curl ou servidores internos)
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Origin não permitido pelo CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'X-Requested-With',
+    ],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204, // Status para navegadores antigos
   });
 
   // Validação global
