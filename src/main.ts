@@ -11,8 +11,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173', // Desenvolvimento local
       'http://localhost:3000',
-      'https://analise-emprestimo-frontend.azurestaticapps.net', // Azure Static Web App
-      'https://analise-emprestimo-frontend.azurewebsites.net', // Azure App Service (caso use)
+      'https://happy-island-0e44dd50f.3.azurestaticapps.net', // Frontend Azure Static Web App
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
