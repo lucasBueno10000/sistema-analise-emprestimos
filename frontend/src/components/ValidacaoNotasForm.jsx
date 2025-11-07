@@ -142,7 +142,7 @@ function ValidacaoNotasForm() {
             name="cnpj"
             value={formData.cnpj}
             onChange={handleChange}
-            placeholder="34.028.316/0001-96"
+            placeholder="51.234.567/0001-63"
             maxLength="18"
             required
             style={{ borderColor: cnpjError ? '#ef4444' : undefined, borderWidth: cnpjError ? '2px' : undefined }}
@@ -150,7 +150,7 @@ function ValidacaoNotasForm() {
           {cnpjError ? (
             <small style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 500 }}>❌ {cnpjError}</small>
           ) : (
-            <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>Digite o CNPJ completo | Ex: 34.028.316/0001-96</small>
+            <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>Digite o CNPJ completo | Ex: 51.234.567/0001-63</small>
           )}
         </div>
 
@@ -189,7 +189,7 @@ function ValidacaoNotasForm() {
         </div>
 
         <button type="submit" className="btn btn-analise" disabled={loading}>
-          {loading ? 'Validando...' : '✔️ Validar Notas Fiscais'}
+          {loading ? 'Validando...' : 'Validar Notas Fiscais ✔️'}
         </button>
       </form>
 

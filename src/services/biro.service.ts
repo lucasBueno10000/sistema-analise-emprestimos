@@ -43,12 +43,17 @@ export class BiroService {
   }
 
   private gerarScoreSimulado(cnpj: string): number {
-    // Gera score baseado no último dígito do CNPJ para testes consistentes
-    const ultimoDigito = parseInt(cnpj.slice(-1));
+    // Agora gera score baseado no PRIMEIRO dígito do CNPJ (após remover formatação) para testes consistentes
+    const digitos = cnpj.replace(/\D/g, '');
+    const primeiroDigito = parseInt(digitos.charAt(0));
 
-    if (ultimoDigito >= 8) return 850 + Math.random() * 150; // Score alto (800-1000)
-    if (ultimoDigito >= 5) return 650 + Math.random() * 150; // Score médio (600-800)
-    if (ultimoDigito >= 3) return 450 + Math.random() * 150; // Score baixo (400-600)
+    if (Number.isNaN(primeiroDigito)) {
+      return 300 + Math.random() * 100; // fallback neutro
+    }
+
+    if (primeiroDigito >= 8) return 850 + Math.random() * 150; // Score alto (800-1000)
+    if (primeiroDigito >= 5) return 650 + Math.random() * 150; // Score médio (600-800)
+    if (primeiroDigito >= 3) return 450 + Math.random() * 150; // Score baixo (400-600)
     return 200 + Math.random() * 200; // Score muito baixo (200-400)
   }
 

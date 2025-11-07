@@ -17,7 +17,7 @@ export class AnaliseCreditoRequestDto {
     description: 'Valor do empréstimo solicitado',
   })
   @IsNumber()
-  @Min(1000)
+  @Min(1000, { message: 'Valor solicitado mínimo é R$ 1.000,00' })
   valorSolicitado: number;
 }
 

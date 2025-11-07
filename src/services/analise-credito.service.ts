@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { BiroService } from './biro.service';
@@ -99,7 +98,8 @@ export class AnaliseCreditoService {
       );
 
       // Verificar se o valor solicitado está dentro do limite aprovado
-      const valorAprovado = dadosBomPagador.percentualPago >= 70 && request.valorSolicitado <= valorMaximo;
+  // Ajuste: aprovação agora exige >=65% de histórico pago (antes 70%)
+  const valorAprovado = dadosBomPagador.percentualPago >= 65 && request.valorSolicitado <= valorMaximo;
 
       return {
         aprovado: valorAprovado,
@@ -116,16 +116,15 @@ export class AnaliseCreditoService {
           valorMaximo,
         ),
         motivoRecusa: !valorAprovado
-          ? dadosBomPagador.percentualPago < 70
-            ? 'Histórico de pagamentos insuficiente (mínimo 70% requerido)'
+          ? dadosBomPagador.percentualPago < 65
+            ? 'Histórico de pagamentos insuficiente (mínimo 65% requerido)'
             : `Valor solicitado (R$ ${request.valorSolicitado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}) excede o limite aprovado (R$ ${valorMaximo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })})`
           : undefined,
       };
     } catch (error) {
       this.logger.error(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Erro ao analisar crédito: ${error.message}`,
-        error.stack,
+        `Erro ao analisar crédito: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+        error instanceof Error ? error.stack : undefined,
       );
       throw error;
     }
@@ -230,7 +229,8 @@ export class AnaliseCreditoService {
     valorMaximo: number,
   ): string[] {
     // Se não foi aprovado por exceder o valor
-    if (!valorAprovado && percentualPago >= 70) {
+  // Ajuste: recomendações de excesso de valor agora consideram >=65%
+  if (!valorAprovado && percentualPago >= 65) {
       return [
         `Valor solicitado (R$ ${valorSolicitado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}) excede o limite aprovado`,
         `Limite máximo aprovado: R$ ${valorMaximo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
@@ -244,7 +244,7 @@ export class AnaliseCreditoService {
         minimo: 90,
         mensagem: 'Excelente histórico de pagamentos - Cliente Premium',
       },
-      { minimo: 70, mensagem: 'Bom histórico de pagamentos' },
+      { minimo: 65, mensagem: 'Bom histórico de pagamentos' },
     ];
 
     const faixaMensagens = {

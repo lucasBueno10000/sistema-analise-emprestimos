@@ -26,7 +26,6 @@ export class BomPagadorService {
   async consultarHistoricoPagamento(cnpj: string): Promise<BomPagadorDto> {
     this.logger.log(`Consultando histórico de pagamento para CNPJ: ${cnpj}`);
 
-    // eslint-disable-next-line prettier/prettier
     // Simula delay de API externa
     await this.delay(400);
 
@@ -54,15 +53,18 @@ export class BomPagadorService {
   }
 
   private gerarTotalPago(cnpj: string, totalDividas: number): number {
-    // Percentual de pagamento baseado no último dígito do CNPJ
-    const ultimoDigito = parseInt(cnpj.slice(-1));
+    // Percentual de pagamento agora baseado no PRIMEIRO dígito do CNPJ
+    const digitos = cnpj.replace(/\D/g, '');
+    const primeiroDigito = parseInt(digitos.charAt(0));
 
     let percentual: number;
-    if (ultimoDigito >= 8)
+    if (Number.isNaN(primeiroDigito)) {
+      percentual = 0.5; // fallback neutro
+    } else if (primeiroDigito >= 8)
       percentual = 0.95; // 95% pago - EXCELENTE
-    else if (ultimoDigito >= 5)
+    else if (primeiroDigito >= 5)
       percentual = 0.8; // 80% pago - BOM
-    else if (ultimoDigito >= 3)
+    else if (primeiroDigito >= 3)
       percentual = 0.65; // 65% pago - REGULAR
     else percentual = 0.4; // 40% pago - RUIM
 
@@ -73,7 +75,7 @@ export class BomPagadorService {
     percentual: number,
   ): 'EXCELENTE' | 'BOM' | 'REGULAR' | 'RUIM' {
     if (percentual >= 90) return 'EXCELENTE';
-    if (percentual >= 70) return 'BOM';
+    if (percentual >= 65) return 'BOM';
     if (percentual >= 50) return 'REGULAR';
     return 'RUIM';
   }

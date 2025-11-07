@@ -102,12 +102,18 @@ export class FaturamentoService {
   }
 
   private gerarFaturamento(cnpj: string): number {
-    // Gera faturamento baseado no CNPJ para testes consistentes
-    const base = parseInt(cnpj.slice(-3));
+    // Agora gera faturamento baseado no PRIMEIRO dígito do CNPJ (após remover formatação)
+    const digitos = cnpj.replace(/\D/g, '');
+    const primeiroDigito = parseInt(digitos.charAt(0));
 
-    if (base >= 800) return 1500000 + Math.random() * 500000; // Alto (1.5M+)
-    if (base >= 500) return 200000 + Math.random() * 300000; // Médio (200K-500K)
-    if (base >= 200) return 30000 + Math.random() * 70000; // Baixo (30K-100K)
+    // Fallback caso CNPJ inválido
+    if (Number.isNaN(primeiroDigito)) {
+      return 30000 + Math.random() * 70000; // faixa neutra
+    }
+
+    if (primeiroDigito >= 8) return 1500000 + Math.random() * 500000; // Alto (1.5M+)
+    if (primeiroDigito >= 5) return 200000 + Math.random() * 300000; // Médio (200K-500K)
+    if (primeiroDigito >= 3) return 30000 + Math.random() * 70000; // Baixo (30K-100K)
     return 5000 + Math.random() * 10000; // Muito baixo (<15K)
   }
 
