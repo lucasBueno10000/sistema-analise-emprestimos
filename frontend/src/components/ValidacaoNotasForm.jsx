@@ -11,16 +11,73 @@ function ValidacaoNotasForm() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
+  const [cnpjError, setCnpjError] = useState('')
+
+  // Função para validar CNPJ (mesma lógica usada no outro formulário)
+  const validarCNPJ = (cnpj) => {
+    cnpj = cnpj.replace(/[^\d]/g, '')
+    if (cnpj.length !== 14) return false
+    if (/^(\d)\1+$/.test(cnpj)) return false
+    let tamanho = cnpj.length - 2
+    let numeros = cnpj.substring(0, tamanho)
+    const digitos = cnpj.substring(tamanho)
+    let soma = 0
+    let pos = tamanho - 7
+    for (let i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--
+      if (pos < 2) pos = 9
+    }
+    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
+    if (resultado != digitos.charAt(0)) return false
+    tamanho = tamanho + 1
+    numeros = cnpj.substring(0, tamanho)
+    soma = 0
+    pos = tamanho - 7
+    for (let i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--
+      if (pos < 2) pos = 9
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
+    if (resultado != digitos.charAt(1)) return false
+    return true
+  }
+
+  const formatarCNPJ = (valor) => {
+    valor = valor.replace(/\D/g, '')
+    valor = valor.replace(/^(\d{2})(\d)/, '$1.$2')
+    valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    valor = valor.replace(/\.(\d{3})(\d)/, '.$1/$2')
+    valor = valor.replace(/(\d{4})(\d)/, '$1-$2')
+    return valor
+  }
+
+  const formatarMoeda = (valor) => {
+    valor = valor.replace(/\D/g, '')
+    valor = (Number(valor) / 100).toFixed(2)
+    valor = valor.replace('.', ',')
+    valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+    return valor
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const cnpjLimpo = formData.cnpj.replace(/\D/g, '')
+    if (!validarCNPJ(cnpjLimpo)) {
+      setCnpjError('CNPJ inválido. Verifique os dígitos.')
+      return
+    }
+    setCnpjError('')
+
     setLoading(true)
     setError(null)
     setResult(null)
 
+    const valorNumerico = Number(formData.valorEmprestimo.replace(/\./g, '').replace(',', '.'))
+
     const data = new FormData()
-    data.append('cnpj', formData.cnpj)
-    data.append('valorEmprestimo', Number(formData.valorEmprestimo))
+    data.append('cnpj', cnpjLimpo)
+    data.append('valorEmprestimo', valorNumerico)
     data.append('arquivo', formData.arquivo)
 
     try {
@@ -47,10 +104,22 @@ function ValidacaoNotasForm() {
   }
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    const { name, value } = e.target
+    if (name === 'cnpj') {
+      const formatado = formatarCNPJ(value)
+      setFormData({ ...formData, cnpj: formatado })
+      const limpo = value.replace(/\D/g, '')
+      if (limpo.length === 14) {
+        setCnpjError(validarCNPJ(limpo) ? '' : 'CNPJ inválido')
+      } else if (limpo.length > 0) {
+        setCnpjError('')
+      }
+    } else if (name === 'valorEmprestimo') {
+      const formatado = formatarMoeda(value)
+      setFormData({ ...formData, valorEmprestimo: formatado })
+    } else {
+      setFormData({ ...formData, [name]: value })
+    }
   }
 
   const handleFileChange = (e) => {
@@ -73,26 +142,31 @@ function ValidacaoNotasForm() {
             name="cnpj"
             value={formData.cnpj}
             onChange={handleChange}
-            placeholder="12345678000190"
+            placeholder="34.028.316/0001-96"
+            maxLength="18"
             required
+            style={{ borderColor: cnpjError ? '#ef4444' : undefined, borderWidth: cnpjError ? '2px' : undefined }}
           />
+          {cnpjError ? (
+            <small style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 500 }}>❌ {cnpjError}</small>
+          ) : (
+            <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>Digite o CNPJ completo | Ex: 34.028.316/0001-96</small>
+          )}
         </div>
 
         <div className="form-group">
           <label htmlFor="valorEmprestimo">Valor do Empréstimo (R$)</label>
           <input
-            type="number"
+            type="text"
             id="valorEmprestimo"
             name="valorEmprestimo"
             value={formData.valorEmprestimo}
             onChange={handleChange}
-            placeholder="100000"
-            min="1000"
-            step="0.01"
+            placeholder="0,00"
             required
           />
-          <small style={{ color: '#666', fontSize: '0.85rem' }}>
-            Valor mínimo: R$ 1.000,00
+          <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>
+            Valor mínimo: R$ 1.000,00 | Exemplo: 250.000,00
           </small>
         </div>
 
@@ -108,13 +182,13 @@ function ValidacaoNotasForm() {
               required
             />
             <label htmlFor="arquivo" className="file-input-label">
-              {fileName || '📎 Selecionar arquivo XML ou CNAB (.REM)'}
+              <span className="file-input-text">{fileName || '📎 Selecionar arquivo XML ou CNAB (.REM)'}</span>
             </label>
           </div>
           {fileName && <div className="file-name">Arquivo selecionado: {fileName}</div>}
         </div>
 
-        <button type="submit" className="btn" disabled={loading}>
+        <button type="submit" className="btn btn-analise" disabled={loading}>
           {loading ? 'Validando...' : '✔️ Validar Notas Fiscais'}
         </button>
       </form>
@@ -209,7 +283,7 @@ function ValidacaoNotasForm() {
           {result.mensagem && (
             <div className="recommendations">
               <h3>📋 Mensagem</h3>
-              <p style={{ padding: '15px', background: 'white', borderRadius: '8px' }}>
+              <p style={{ padding: '15px', background: 'white', borderRadius: '8px', color: '#16304C', fontWeight: 600 }}>
                 {result.mensagem}
               </p>
             </div>

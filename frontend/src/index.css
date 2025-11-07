@@ -6,9 +6,11 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Cor de fundo solicitada */
+  background: #16304C;
   min-height: 100vh;
   padding: 20px;
+  color: #f2f6fa; /* melhora contraste em dark bg */
 }
 
 #root {
@@ -17,10 +19,11 @@ body {
 }
 
 .container {
-  background: white;
+  background: #1f3e5c; /* tom mais claro para contraste com #16304C */
   border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  color: #f2f6fa;
 }
 
 .header {
@@ -29,13 +32,14 @@ body {
 }
 
 .header h1 {
-  color: #667eea;
+  color: #ffffff;
   font-size: 2.5rem;
   margin-bottom: 10px;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.4);
 }
 
 .header p {
-  color: #666;
+  color: #c8d4e0;
   font-size: 1.1rem;
 }
 
@@ -59,12 +63,12 @@ body {
 }
 
 .tab:hover {
-  color: #667eea;
+  color: #16304C;
 }
 
 .tab.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: #16304C;
+  border-bottom-color: #16304C;
 }
 
 .form-group {
@@ -74,7 +78,7 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #333;
+  color: #ffffff; /* labels em branco conforme pedido */
   font-weight: 600;
 }
 
@@ -91,7 +95,7 @@ body {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #16304C;
 }
 
 .file-input-wrapper {
@@ -109,31 +113,40 @@ body {
 .file-input-label {
   display: block;
   padding: 12px 15px;
-  border: 2px dashed #667eea;
+  border: 2px dashed #16304C;
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
   background: #f8f9ff;
-  color: #667eea;
+  color: #16304C;
   font-weight: 600;
   transition: all 0.3s;
 }
 
+/* Texto interno do label do arquivo em azul mais vibrante */
+.file-input-label .file-input-text {
+  color: #667eea;
+}
+
+.file-input-label:hover .file-input-text {
+  color: #ffffff;
+}
+
 .file-input-label:hover {
-  background: #667eea;
+  background: #16304C;
   color: white;
 }
 
 .file-name {
   margin-top: 10px;
-  color: #666;
+  color: #1f3e5c; /* cor solicitada para nome do arquivo */
   font-size: 0.9rem;
 }
 
 .btn {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16304C 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -153,10 +166,19 @@ body {
   cursor: not-allowed;
 }
 
+/* Botão específico da análise de crédito */
+.btn.btn-analise {
+  background: linear-gradient(135deg, #B88317 0%, #D29A2A 100%);
+}
+
+.btn.btn-analise:hover:not(:disabled) {
+  box-shadow: 0 10px 20px rgba(184, 131, 23, 0.45);
+}
+
 .loading {
   text-align: center;
   padding: 40px;
-  color: #667eea;
+  color: #16304C;
   font-size: 1.2rem;
 }
 
@@ -176,7 +198,7 @@ body {
   padding: 30px;
   background: #f8f9ff;
   border-radius: 12px;
-  border-left: 5px solid #667eea;
+  border-left: 5px solid #16304C;
   animation: slideIn 0.5s ease-out;
 }
 
@@ -262,7 +284,7 @@ body {
 }
 
 .empresa-info h3 {
-  color: #667eea;
+  color: #16304C;
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
@@ -306,8 +328,8 @@ body {
 }
 
 .info-card.highlight {
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-  border: 2px solid #667eea;
+  background: linear-gradient(135deg, #16304C15 0%, #764ba215 100%);
+  border: 2px solid #16304C;
 }
 
 .card-icon {
@@ -316,7 +338,7 @@ body {
 }
 
 .info-card h3 {
-  color: #667eea;
+  color: #16304C;
   font-size: 0.9rem;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -377,10 +399,11 @@ body {
   background: #f8f9ff;
   margin-bottom: 10px;
   border-radius: 8px;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #16304C;
   display: flex;
   align-items: start;
   gap: 10px;
+  color: #16304C; /* texto das recomendações na cor solicitada */
 }
 
 .rec-icon {
@@ -474,8 +497,16 @@ body {
   border-bottom: 1px solid #e0e0e0;
 }
 
+/* Colunas específicas da tabela de notas fiscais */
+.notas-table td:nth-child(1), /* chave */
+.notas-table td:nth-child(2), /* valor */
+.notas-table td:nth-child(4)  /* tags */ {
+  color: #1f3e5c;
+  font-weight: 600;
+}
+
 .notas-table th {
-  background: #667eea;
+  background: #16304C;
   color: white;
   font-weight: 600;
   text-transform: uppercase;
@@ -528,7 +559,7 @@ body {
   }
 
   .tab.active {
-    border-left-color: #667eea;
+    border-left-color: #16304C;
     border-bottom-color: #e0e0e0;
   }
 
@@ -550,13 +581,13 @@ body {
   text-align: center;
   margin-bottom: 40px;
   padding: 30px;
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  background: linear-gradient(135deg, #16304C15 0%, #764ba215 100%);
   border-radius: 15px;
-  border: 2px solid #667eea;
+  border: 2px solid #16304C;
 }
 
 .welcome-section h2 {
-  color: #667eea;
+  color: #16304C;
   font-size: 2rem;
   margin-bottom: 15px;
 }
@@ -588,7 +619,7 @@ body {
 .feature-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-  border-color: #667eea;
+  border-color: #16304C;
 }
 
 .feature-icon {
@@ -627,7 +658,7 @@ body {
   display: block;
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16304C 0%, #764ba2 100%);
   color: white;
   text-align: center;
   text-decoration: none;
@@ -677,7 +708,7 @@ body {
 .workflow-number {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16304C 0%, #764ba2 100%);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -703,7 +734,7 @@ body {
 
 .workflow-arrow {
   font-size: 2rem;
-  color: #667eea;
+  color: #16304C;
   font-weight: 700;
 }
 
@@ -718,12 +749,12 @@ body {
   background: white;
   padding: 25px;
   border-radius: 12px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #16304C;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .info-box h4 {
-  color: #667eea;
+  color: #16304C;
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
@@ -771,11 +802,11 @@ body {
 }
 
 .tabs a.tab:hover {
-  color: #667eea;
+  color: #16304C;
 }
 
 .tabs a.tab.active {
-  color: #667eea;
+  color: #16304C;
 }
 
 @media (max-width: 768px) {
@@ -793,5 +824,9 @@ body {
 
   .info-section {
     grid-template-columns: 1fr;
+  }
+
+  .button {
+    color: #B88317
   }
 }

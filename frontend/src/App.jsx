@@ -9,11 +9,11 @@ function App() {
     <Router>
       <div className="container">
         <header className="header">
-          <h1>💰 Sistema de Análise de Empréstimos</h1>
+          <h1>💰 Análise de Empréstimos</h1>
           <p>Análise de crédito e validação de documentos empresariais</p>
           <nav style={{ margin: '20px 0' }}>
-            <Link to="/" className="tab">Análise de Crédito</Link>
-            <Link to="/validacao" className="tab">Validação de Notas</Link>
+            <Link style={{ color: '#ffffff' }} to="/" className="tab">Análise de Crédito</Link>
+            <Link style={{ color: '#ffffff' }} to="/validacao" className="tab">Validação de Notas</Link>
           </nav>
         </header>
         <Routes>

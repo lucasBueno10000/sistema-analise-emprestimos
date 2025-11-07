@@ -183,7 +183,7 @@ function AnaliseCreditoForm() {
               ❌ {cnpjError}
             </small>
           ) : (
-            <small style={{ color: '#666', fontSize: '0.85rem' }}>
+            <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>
               Digite o CNPJ com ou sem pontuação | Exemplo: 34.028.316/0001-96
             </small>
           )}
@@ -213,12 +213,12 @@ function AnaliseCreditoForm() {
             placeholder="0,00"
             required
           />
-          <small style={{ color: '#666', fontSize: '0.85rem' }}>
+          <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>
             Valor mínimo: R$ 1.000,00 | Exemplo: 50.000,00
           </small>
         </div>
 
-        <button type="submit" className="btn" disabled={loading}>
+        <button type="submit" className="btn btn-analise" disabled={loading}>
           {loading ? 'Analisando...' : '🔍 Analisar Crédito'}
         </button>
       </form>
@@ -286,7 +286,7 @@ function AnaliseCreditoForm() {
               <div className="info-card">
                 <div className="card-icon">💰</div>
                 <h3>Faturamento Anual</h3>
-                <div className="value" style={{ color: '#667eea' }}>
+                <div className="value" style={{ color: '#16304C' }}>
                   {new Intl.NumberFormat('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
