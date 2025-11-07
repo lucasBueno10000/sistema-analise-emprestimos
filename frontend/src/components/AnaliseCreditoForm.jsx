@@ -170,7 +170,7 @@ function AnaliseCreditoForm() {
             name="cnpj"
             value={formData.cnpj}
             onChange={handleChange}
-            placeholder="34.028.316/0001-96"
+            placeholder="51.234.567/0001-63"
             maxLength="18"
             required
             style={{ 
@@ -184,7 +184,7 @@ function AnaliseCreditoForm() {
             </small>
           ) : (
             <small style={{ color: '#ffffff', fontSize: '0.85rem' }}>
-              Digite o CNPJ com ou sem pontuação | Exemplo: 34.028.316/0001-96
+              Digite o CNPJ com ou sem pontuação | Exemplo: 51.234.567/0001-63
             </small>
           )}
         </div>
@@ -219,7 +219,7 @@ function AnaliseCreditoForm() {
         </div>
 
         <button type="submit" className="btn btn-analise" disabled={loading}>
-          {loading ? 'Analisando...' : '🔍 Analisar Crédito'}
+          {loading ? 'Analisando...' : 'Analisar Crédito 🔍 '}
         </button>
       </form>
 
